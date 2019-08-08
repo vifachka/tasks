@@ -1,5 +1,7 @@
 package by.epam.javatraining.bialiatskaya.tasks.task03;
 
+import java.util.Arrays;
+
 public class Realization {
 
     public Realization() {
@@ -27,6 +29,8 @@ public class Realization {
         defineFirstLocalExtremes(array3);
         System.out.println("task5");
         search(array5, 1.6);
+        System.out.println("task6");
+        reverseAndShow(array5);
     }
 
     /* Check whether array is incorrect: doesn't exist or has null lenght */
@@ -345,14 +349,29 @@ public class Realization {
     double[] sort(double[] array) {
         return array;
     }
-//    /** MainTask03.Task
-//     *
-//     *
-//     */
-//    void check(double[] array) {
-//        if (isNotZeroArray(array))
-//            return;
-//
-//        System.out.println(".");
-//    }
+
+    double[] reverse(double[] array) {
+        int minIndex = 0;
+        int maxIndex = array.length - 1;
+
+        while (minIndex < maxIndex) {
+            array[minIndex] = array[minIndex] + array[maxIndex];
+            array[maxIndex] = array[minIndex] - array[maxIndex];
+            array[minIndex] = array[minIndex] - array[maxIndex];
+
+            minIndex++;
+            maxIndex--;
+        }
+        return array;
+    }
+    /** MainTask03.Task6
+     *  Reverse all the elements of the array */
+    void reverseAndShow(double[] array) {
+        if (isNotZeroArray(array)) {
+            System.out.println("Before " + Arrays.toString(array));
+            double[] newArray = reverse(array);
+
+            System.out.println("After" + Arrays.toString(newArray));
+        }
+    }
 }
