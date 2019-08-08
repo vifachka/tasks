@@ -25,6 +25,8 @@ public class Realization {
         defineFirstLocalExtremes(array1);
         defineFirstLocalExtremes(array2);
         defineFirstLocalExtremes(array3);
+        System.out.println("task5");
+        search(array5, 1.6);
     }
 
     /* Check whether array is incorrect: doesn't exist or has null lenght */
@@ -74,8 +76,8 @@ public class Realization {
             if (minIndex == maxIndex) {
                 System.out.println("-1");
             } else {
-                System.out.println("Min value element index = " + minIndex);
-                System.out.println("Max value element index = " + maxIndex);
+                System.out.println("Min value element index = " + minIndex +
+                                   " max value element index = " + maxIndex);
             }
         }
     }
@@ -111,8 +113,8 @@ public class Realization {
             double arithmetic = arithmeticMeans(array);
             double geometric = geometricMeans(array);
 
-            System.out.print("Arithmetic mean = " + arithmetic);
-            System.out.print("geometric  mean = " + geometric + "\n");
+            System.out.print("Arithmetic mean = " + arithmetic +
+                             " geometric  mean = " + geometric + "\n");
         }
     }
 
@@ -129,9 +131,8 @@ public class Realization {
     }
 
     /* Check the elements whether are of the same value*/
-    boolean hasSameElements(double[] array, int i) {
-        if (array[0] == array[i]) {
-            System.out.println("all elements are the same, can't define if they are placed in ascending order");
+    boolean notSameElements(double[] array) {
+        if (array[0] == array[array.length - 1]) {
             return false;
         } else {
             return true;
@@ -147,17 +148,28 @@ public class Realization {
             i++;
         }
 
-        if (array[0] == array[i]) {
-            System.out.println("all elements are the same, can't define if they are placed in descending order");
-            return false;
+        return true;
+    }
+
+    /* Define whether array is ordered.
+       returns 0 - if ascending order, 1 - if descending order, -1 - otherwise
+    * */
+    int isOrdered(double[] array) {
+        int returnVar = -1;
+        if (notSameElements(array)) {
+            if (isAscendingForm(array)) {
+                returnVar = 0;
+            } else {
+                if (isDescendingForm(array))
+                    returnVar = 1;
+            }
         }
 
-        return true;
+        return returnVar;
     }
 
     /** MainTask03.Task3
      *  Check whether all elements of the vector are in an ordered ascending or descending form
-     *
      */
     void checkForOrderedForm(double[] array) {
         if (isNotZeroArray(array)) {
@@ -166,23 +178,33 @@ public class Realization {
                 return;
             }
 
-            String mess = (isAscendingForm(array) && hasSameElements(array, array.length - 1) ? "ascending" : "descending");
-            System.out.println("All elements of the vector are in an ordered " + mess + " form.");
+            String mess = "";
+            switch (isOrdered(array)) {
+                case (1):
+                    System.out.println("All elements of the vector are in an ordered ascending form.");
+                    break;
+                case (0):
+                    System.out.println("All elements of the vector are in an ordered descending form.");
+                    break;
+                case (-1):
+                    System.out.println("all elements are the same, can't detect order ");
+                    break;
+            }
         }
     }
 
-    /* Method to define both max/min local elements for 2-element vector
-     * Returns array of elements: 1st (index=0) - local minimum, 2nd (index = 1) - local maximum
-     * */
-    public int[] localMinMaxIndexFor2Elements(double[] array) {
-        int[] returnArray = new int[2];
-
-        returnArray[0] = (array[0] < array[1] ? 0 : 1);
-        returnArray[1] = returnArray[0] | (int) 1;
-
-        return returnArray;
-    }
-
+//    /* Method to define both max/min local elements for 2-element vector
+//     * Returns array of elements: 1st (index=0) - local minimum, 2nd (index = 1) - local maximum
+//     * */
+//    int[] localMinMaxIndexFor2Elements(double[] array) {
+//        int[] returnArray = new int[2];
+//
+//        returnArray[0] = (array[0] < array[1] ? 0 : 1);
+//        returnArray[1] = returnArray[0] | (int) 1;
+//
+//        return returnArray;
+//    }
+//
     /* Method to define index of local minimum for vectors (with more than 2 elements)
      * Returns local minimum, or -1 if there's no local minimum
      * */
@@ -230,7 +252,8 @@ public class Realization {
     boolean isArrayRight(double[] array) {
         if (isNotZeroArray(array)) {
             if (array.length == 1) {
-                System.out.println("Array consists only from one element, impossible to define the local extermal elements.");
+                System.out.println("Array consists only from one element, " +
+                                   "impossible to define the local extreme elements.");
                 return false;
             } else {
                 return true;
@@ -240,9 +263,8 @@ public class Realization {
 
     /** MainTask03.Task4
      *  Define the first local minimum and local maximum
-     *
      */
-    public void defineFirstLocalExtremes(double[] array) {
+    void defineFirstLocalExtremes(double[] array) {
         if (isArrayRight(array)) {
             int maxIndex;
             int minIndex;
@@ -265,23 +287,70 @@ public class Realization {
         }
     }
 
+    /* Make the linear search */
+    int linearSearch(double[] array, double item) {
+        int i = 0;
+
+        while (i < array.length) {
+            if (array[i] == item)
+                return i;
+            i++;
+        }
+        return -1;
+    }
+
+    /*  Make the binary search */
+    int binarySearch(double[] array, double item) {
+        int lowIndex  = 0;
+        int highIndex = array.length - 1;
+        int index = -1;
+
+        while (lowIndex <= highIndex) {
+            int midIndex = (lowIndex + highIndex) / 2;
+
+            if (array[midIndex] < item) {
+                lowIndex = midIndex + 1;
+            } else
+                if (array[midIndex] > item) {
+                    highIndex = midIndex - 1;
+                } else {
+                    index = midIndex;  // index of item in sorted array
+                    break;
+                }
+        }
+        return index;
+    }
+
+    void showMessTask3(double[] array, int index) {
+        if (index == -1) {
+            System.out.println("The item hasn't found.");
+        } else {
+            System.out.println("Here is the item: " + array[index]);
+        }
+    }
+    /** MainTask03.Task5
+     *  Make either binary and linear search */
+    void search(double[] array, double item) {
+        if (isArrayRight(array)) {
+            showMessTask3(array, linearSearch(array, item));
+
+            double[] sortedArray = array;
+            if (isOrdered(array) == -1) {
+                sortedArray = sort(array);
+            }
+            showMessTask3(sortedArray, binarySearch(sortedArray, item));
+        }
+    }
+
+    double[] sort(double[] array) {
+        return array;
+    }
 //    /** MainTask03.Task
 //     *
 //     *
 //     */
 //    void check(double[] array) {
-//        if (IsZeroArray(array))
-//            return;
-//
-//        System.out.println(".");
-//    }
-//
-//    /** MainTask03.Task
-//     *
-//     *
-//     */
-//    void check(double[] array) {
-//        if (IsZeroArray(array))
+//        if (isNotZeroArray(array))
 //            return;
 //
 //        System.out.println(".");
